@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Report Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      grid-column: span 2;
+      padding: 12px;
+      background: #27ae60;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #219150;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #2c3e50;
+      color: white;
+    }
+
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <header>📘 Student Report Management System</header>
+
+  <div class="container">
+    <h2>Add Student Report</h2>
+    <form id="reportForm">
+      <div>
+        <label for="name">Student Name</label>
+        <input type="text" id="name" required>
+      </div>
+      <div>
+        <label for="roll">Roll Number</label>
+        <input type="text" id="roll" required>
+      </div>
+      <div>
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" required>
+      </div>
+      <div>
+        <label for="marks">Marks</label>
+        <input type="number" id="marks" min="0" max="100" required>
+      </div>
+      <button type="submit">Add Report</button>
+    </form>
+
+    <h2>Student Reports</h2>
+    <table id="reportTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Roll No</th>
+          <th>Subject</th>
+          <th>Marks</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will appear here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById("reportForm");
+    const tableBody = document.querySelector("#reportTable tbody");
+
+    // Load data from localStorage
+    let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+    function renderReports() {
+      tableBody.innerHTML = "";
+      reports.forEach((report, index) => {
+        const row = `
+          <tr>
+            <td>${report.name}</td>
+            <td>${report.roll}</td>
+            <td>${report.subject}</td>
+            <td>${report.marks}</td>
+            <td><button class="delete-btn" onclick="deleteReport(${index})">Delete</button></td>
+          </tr>
+        `;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const report = {
+        name: document.getElementById("name").value,
+        roll: document.getElementById("roll").value,
+        subject: document.getElementById("subject").value,
+        marks: document.getElementById("marks").value,
+      };
+
+      reports.push(report);
+      localStorage.setItem("reports", JSON.stringify(reports));
+      renderReports();
+      form.reset();
+    });
+
+    function deleteReport(index) {
+      reports.splice(index, 1);
+      localStorage.setItem("reports", JSON.stringify(reports));
+      renderReports();
+    }
+
+    // Initial render
+    renderReports();
+  </script>
+</body>
+</html>
